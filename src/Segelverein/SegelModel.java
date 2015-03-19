@@ -9,14 +9,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * @author Raphael Simsek 4CHITM
- * @version 2015-03-17
  * This class is used as the Model for the assignment 'Segelverein'
  * Still in an early state
  * This class builds the connection to the database, for the controller to use.
  * It then uses the connection it built to read the databases' tables.
  *
  * In a future version this shall also control the CRUD commands to the database, though it is already reading the database.
+ * @author Raphael Simsek 4CHITM
+ * @version 2015-03-17
  */
 public class SegelModel {
     //creating attributes
@@ -93,9 +93,8 @@ public class SegelModel {
         while (rsTables.next()) {
             tables.add(rsTables.getString(3));
         }
+
         ResultSet rsColumns = metaData.getColumns(null, null, rsTables.getString("TABLE_NAME"), "%");
-
-
         while (rsColumns.next()) {
             columns.add(rsColumns.getString("COLUMN_NAME"));
         }
