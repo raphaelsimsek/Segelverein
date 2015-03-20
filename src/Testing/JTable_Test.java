@@ -8,7 +8,7 @@ import java.awt.*;
  * @author Raphael Simsek 4CHITM
  * @version 2015-03-19
  */
-public class JTable_Test extends JPanel{
+    public class JTable_Test extends JPanel{
     private JTable table;
     public JTable_Test(){
 

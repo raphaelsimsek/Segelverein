@@ -17,8 +17,11 @@ public class SegelTest {
      * @param args user input in the main method
      */
     public static void main(String[]args){
+        SegelModel model=new SegelModel();
+        SegelView view=new SegelView();
+
         try {
-            new SegelController();  //call of the default constructor of the controller
+            new SegelController(model,view);  //call of the default constructor of the controller
         } catch (SQLException e) {
             e.printStackTrace();
         }

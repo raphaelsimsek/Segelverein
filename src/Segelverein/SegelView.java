@@ -1,20 +1,45 @@
 package Segelverein;
 
-/**
- * This is the view of the assignment 'Segelverein' by professor Borko and List.
- * It contains the GUI, using a JTable, to show the user the tables of the logged in database.
- * It also contains TabPanes for each of the tables.
- *
- * Content coming soon.
- * @author Raphael Simsek 4CHITM
- * @version 2015-03-17
- */
-public class SegelView {
-    /**
-     * @param cont Object of controller, which will be used to get the shown data for the JTable.
-     * @param model Object of the model,
-     */
-    public SegelView(SegelController cont, SegelModel model){
+import javax.swing.*;
 
+/**
+ * New View class for Segelverein, it used IntelliJ's GUI Form, which made it easier for me to create the GUI.
+ * @author Raphael Simsek
+ * @version 2015-03-20
+ */
+public class SegelView extends JFrame{
+    private JPanel panel1;
+    private JTabbedPane tabbedPane1;
+    private JTable table;
+    private JButton selectButton;
+    private JTextField selectTextField;
+    private JButton deleteButton;
+    private JButton insertButton;
+
+    public SegelView() {
+        this.setTitle("Segelverein");
+        //put Controller in parameters this.deleteButton.addActionListener();
+        this.setContentPane(new SegelView().panel1);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
+    }
+
+    //Getter methods to change the table, get the textfields text and to use ActionEvent on the Buttons
+    public JTable getTable(){
+        return table;
+    }
+    public JTextField getSelectTextField(){
+        return selectTextField;
+    }
+    public JButton getInsertButton() {
+        return insertButton;
+    }
+
+    public JButton getDeleteButton() {
+        return deleteButton;
+    }
+
+    public JButton getSelectButton() {
+        return selectButton;
     }
 }
