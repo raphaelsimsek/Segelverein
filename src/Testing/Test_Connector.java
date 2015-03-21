@@ -11,7 +11,7 @@ import java.sql.*;
  * A first little testing application to using the PostgreSQL connector and outputting the first row of it's ResultSet
  */
 public class Test_Connector {
-    public static void main (String[]args){
+    private static void main (String[]args){
         PGSimpleDataSource ds = new PGSimpleDataSource();     //PostgreSQL DataSource Class, chose Simple, see documentation
         ds.setServerName("VMware"); //VMware is the name set for the IP adress of the virtual machine on each of my systems
         ds.setPortNumber(5432);     //The port which PostgreSQL uses, see PGadmin3

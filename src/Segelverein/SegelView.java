@@ -1,6 +1,7 @@
 package Segelverein;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * New View class for Segelverein, it used IntelliJ's GUI Form, which made it easier for me to create the GUI.
@@ -8,6 +9,7 @@ import javax.swing.*;
  * @version 2015-03-20
  */
 public class SegelView extends JFrame{
+    private SegelController cont;
     private JPanel panel1;
     private JTabbedPane tabbedPane1;
     private JTable table;
@@ -15,13 +17,18 @@ public class SegelView extends JFrame{
     private JTextField selectTextField;
     private JButton deleteButton;
     private JButton insertButton;
+    private JButton rollbackButton;
+    private JButton commitButton;
 
-    public SegelView() {
+    public SegelView(SegelController cont) {
+        this.cont=cont;
         this.setTitle("Segelverein");
-        //put Controller in parameters this.deleteButton.addActionListener();
-        this.setContentPane(new SegelView().panel1);
+        this.deleteButton.addActionListener(this.cont);
+        this.setContentPane(new SegelView(this.cont).panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(500,500);
         this.pack();
+        this.setVisible(true);
     }
 
     //Getter methods to change the table, get the textfields text and to use ActionEvent on the Buttons

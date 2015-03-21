@@ -22,20 +22,28 @@ public class SegelController implements Observer, ActionListener{
     private SegelTest test;
     private Connection currentCon;
 
-    public SegelController(SegelModel model, SegelView view) throws SQLException{
-        this.model=model;
-        this.view=view;
+    public SegelController() throws SQLException{
+        this.model=new SegelModel();
+        this.view=new SegelView(this);
 
-        this.view.setVisible(true); //You only set the window visible, once all of the content is loaded to it
+        //You only set the window visible, once all of the content is loaded to it
     }
 
 
     /**
      * Content coming soon
-     * @param e Actionevent used to read any hits of a button in the later coming GUI
+     * @param ae Actionevent used to read any hits of a button in the later coming GUI
      */
     public void actionPerformed(ActionEvent ae){
+        if(ae.getSource()==view.getInsertButton()){
 
+        }
+        if(ae.getSource()==view.getDeleteButton()){
+
+        }
+        if(ae.getSource()==view.getSelectButton()){
+
+        }
     }
 
     /**
