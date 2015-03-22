@@ -8,7 +8,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
- * The controller class of the assignment 'Segelverein'.
+ * The controller class of the assignment 'Segelverein_old'.
  * It is used to connect model and view, as well as to encapsulate the data from each other.
  *
  * In the future this class will check the ActionEvent e via the actionPerformed method, via which the controller will be
@@ -22,9 +22,10 @@ public class SegelController implements Observer, ActionListener{
     private SegelTest test;
     private Connection currentCon;
 
-    public SegelController() throws SQLException{
+    public SegelController(String[] args) throws SQLException{
         this.model=new SegelModel();
         this.view=new SegelView(this);
+        this.view.start(args);
 
         //You only set the window visible, once all of the content is loaded to it
     }
@@ -32,16 +33,37 @@ public class SegelController implements Observer, ActionListener{
 
     /**
      * Content coming soon
-     * @param ae Actionevent used to read any hits of a button in the later coming GUI
+     * @param ae ActionEvent used to read any hits of a button in the later coming GUI
      */
     public void actionPerformed(ActionEvent ae){
-        if(ae.getSource()==view.getInsertButton()){
-
-        }
         if(ae.getSource()==view.getDeleteButton()){
 
         }
+        if(ae.getSource()==view.getCommitButton()){
+
+        }
+        if(ae.getSource()==view.getRollbackButton()){
+
+        }
+        if(ae.getSource()==view.getInsertButton()){
+
+        }
+        if(ae.getSource()==view.getTiefgangCheckBox()){
+
+        }
+        if(ae.getSource()==view.getPersonenCheckBox()){
+
+        }
+        if(ae.getSource()==view.getNameCheckBox()){
+
+        }
+        if(ae.getSource()==view.getIdCheckBox()){
+
+        }
         if(ae.getSource()==view.getSelectButton()){
+
+        }
+        if(ae.getSource()==view.getDeleteButton()){
 
         }
     }
@@ -54,8 +76,5 @@ public class SegelController implements Observer, ActionListener{
     @Override
     public void update(Observable o, Object arg) {
 
-    }
-    public SegelController getSegelController(){
-        return this;
     }
 }

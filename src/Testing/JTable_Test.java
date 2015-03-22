@@ -10,6 +10,7 @@ import java.awt.*;
  */
     public class JTable_Test extends JPanel{
     private JTable table;
+
     public JTable_Test(){
 
         String[] columnNames={"Name","Age","Gender"};
@@ -27,7 +28,8 @@ import java.awt.*;
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane);
     }
-    public static void main(String [] args){
+
+    public static void jtableTest(String [] args){
         JFrame jf=new JFrame();
         JTable_Test gui=new JTable_Test();
         jf.setTitle("My first java table");
