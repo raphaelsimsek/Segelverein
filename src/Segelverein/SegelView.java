@@ -1,6 +1,9 @@
 package Segelverein;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 
 /**
  * @author Raphael Simsek
@@ -26,6 +29,9 @@ public class SegelView{
     private JComboBox columnComboBox;
     private JButton selectButton;
     private JFrame frame;
+    private String[] columnNames = {"ID","Name","Personen","Tiefgang"};
+    private String [][] data={{"1","USNS Effective","10","99"},
+            {"2","USS Michigan","2","154"}};
 
     public SegelView(SegelController cont){
         this.cont=cont;
@@ -39,6 +45,7 @@ public class SegelView{
         this.idCheckBox.addActionListener(this.cont);
         this.selectButton.addActionListener(this.cont);
         this.deleteButton.addActionListener(this.cont);
+        this.mainTable.addFocusListener(this.cont);
     }
     public SegelView(){}
 
@@ -49,9 +56,11 @@ public class SegelView{
         frame.pack();
         frame.setVisible(true);
         frame.setSize(1200,800);
-        frame.setResizable(false);
+        frame.setResizable(true);
         frame.setTitle("Segelverein");
         mainTable.putClientProperty("terminateEditOnFocusLost", true);
+        this.mainTable.setPreferredScrollableViewportSize(new Dimension(100, 100));
+        this.mainTable.setFillsViewportHeight(true);
     }
 
     public void repaint(){
@@ -184,5 +193,9 @@ public class SegelView{
 
     public void setSelectButton(JButton selectButton) {
         this.selectButton = selectButton;
+    }
+
+    private void createUIComponents() {
+        this.mainTable=new JTable(data,columnNames);
     }
 }

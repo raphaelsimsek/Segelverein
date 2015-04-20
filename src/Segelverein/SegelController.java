@@ -1,7 +1,11 @@
 package Segelverein;
 
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Observable;
@@ -16,7 +20,7 @@ import java.util.Observer;
  * @author Raphael Simsek 4CHITM
  * @version 2015-03-17
  */
-public class SegelController implements Observer, ActionListener{
+public class SegelController implements Observer, ActionListener, FocusListener{
     private SegelModel model;
     private SegelView view;
     private SegelTest test;
@@ -75,6 +79,16 @@ public class SegelController implements Observer, ActionListener{
      */
     @Override
     public void update(Observable o, Object arg) {
+
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
 
     }
 }
