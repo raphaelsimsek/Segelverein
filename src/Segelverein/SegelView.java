@@ -82,11 +82,12 @@ public class SegelView{
 
     /**
      * Repaint method to make the JFrame repaint
+     * @link: http://stackoverflow.com/questions/4577792/how-to-clear-jtable
      */
     public void repaint(){
         this.defaultTableModel=(DefaultTableModel)this.mainTable.getModel();
         this.defaultTableModel.getDataVector().removeAllElements();
-        this.mainTable=new JTable(this.cont.getModel());
+        this.mainTable =new JTable(this.cont.getModel());
         this.frame.repaint();
     }
 
