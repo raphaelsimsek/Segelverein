@@ -29,7 +29,7 @@ public class SegelModel {
     private String dbname;
     private static Connection conn;
     private ResultSetMetaData rsmd;
-    private Statement sqlState;
+    private Statement sqlState = null;
     private ResultSet rs;
     //private Boolean first=true; I haven't found the reason yet, but the getDefaultTableModel always used to get called twice, resulting in a unaccurate JTable of the database.
     private static Object[] columns={"id","name","personen","tiefgang"};
@@ -139,14 +139,21 @@ public class SegelModel {
             this.sqlState=conn.createStatement();
             //building query
             String query="INSERT INTO "+tablename+" VALUES ("+values+");";
-            //System.out.println(query); Debugging
 
             //an insert is always executed with executeUpdate, as this is the only one, which doesn't try to get a ResultSet out of the query
             sqlState.executeUpdate(query);
+            //Without a commit everything doesn't work at all, because the Change in the Table performs a SELECT, without the possibility of a commit.
+            conn.commit();
         }catch (SQLException ex){
             JOptionPane.showMessageDialog(null,ex.getMessage(),"Error - Insert Execution failed", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    /**
+     * TODO: Add method for deletion
+     * deleteRow(Index ID Row, Index ID (=1))
+     * See actionPerformed -> deleteButton
+     */
 
     /**
      * getter method for the ResultSetMetaData of the current connection, which is set in the getContent method.

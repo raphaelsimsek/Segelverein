@@ -1,5 +1,7 @@
 package Segelverein;
 
+import com.sun.codemodel.internal.JOp;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -10,8 +12,6 @@ import javax.swing.table.TableColumnModel;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * The controller class of the assignment 'Segelverein'.
@@ -25,7 +25,6 @@ import java.util.Observer;
 public class SegelController implements ActionListener, FocusListener, TableModelListener, ItemListener{
     private SegelModel model;
     private SegelView view;
-    private SegelTest test;
     private Connection currentCon;
     private DefaultTableModel defaultTableModel;
     private TableColumnModel tableColumnModel;
@@ -33,17 +32,20 @@ public class SegelController implements ActionListener, FocusListener, TableMode
     private int lastRow;
     private int index;
     private ItemEvent ie;
-    private boolean notFirst=false;
+    private boolean insertID=false;
+    private boolean insertName=false;
+    private boolean insertPersonen=false;
+    private boolean insertTiefgang=false;
+    private int selectedRow=1;
 
     /**
      * Constructor, which generates all the other objects and gives them its parameter
-     * @param args Parameter of the main method needed to start the GUI off of IntelliJ's GUI builder.
      * @throws SQLException to the main method
      */
-    public SegelController(String[] args) throws SQLException{
+    public SegelController() throws SQLException{
         this.model=new SegelModel(this);
         this.view=new SegelView(this);
-        this.view.start(args);
+        this.view.start();
 
         //You only set the window visible, once all of the content is loaded to it
     }
@@ -56,12 +58,8 @@ public class SegelController implements ActionListener, FocusListener, TableMode
         this.currentCon=this.model.getConn("VMware","segler","segler","segelverein");
         this.defaultTableModel=this.model.getDefaultTableModel(this.currentCon);
         //this.tableColumnModel=this.model.getColumns(); NullPointerException on this Method, unsolved error!
-        if(notFirst){
-            this.view.setDefaultTableModel(this.defaultTableModel);
-            this.view.repaint();
-        }
-        this.notFirst=true;
         return this.defaultTableModel;
+
     }
 
     public TableColumnModel getTableColumnModel() {
@@ -74,11 +72,14 @@ public class SegelController implements ActionListener, FocusListener, TableMode
      */
     public void actionPerformed(ActionEvent ae){
         if(ae.getSource()==view.getDeleteButton()){
-
+            this.selectedRow=this.view.getMainTable().getSelectedRow();
+            Object deleteCell=this.view.getDefaultTableModel().getValueAt(this.selectedRow,1);
+            String query="DELETE FROM boot WHERE id="+deleteCell.toString();
         }
         if(ae.getSource()==view.getCommitButton()){
             try {
                 this.currentCon.commit();
+                this.view.repaint();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error - Commit failed", JOptionPane.ERROR_MESSAGE);
             }
@@ -87,6 +88,7 @@ public class SegelController implements ActionListener, FocusListener, TableMode
         if(ae.getSource()==view.getRollbackButton()){
             try {
                 this.currentCon.rollback();
+                this.view.repaint();
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error - Rollback failed", JOptionPane.ERROR_MESSAGE);
             }
@@ -97,33 +99,37 @@ public class SegelController implements ActionListener, FocusListener, TableMode
             String name = "";
             String personen = "";
             String tiefgang = "";
-            if (!view.getIdCheckBox().isSelected()) {
+            if (!view.getIdCheckBox().isSelected()&&this.insertID) {
                 JOptionPane.showMessageDialog(null, "The primary key has to be checked", "Error - Insert failed", JOptionPane.ERROR_MESSAGE);
+            }else{
+                id=JOptionPane.showInputDialog(null,"Please input a value for ID","ID value!",JOptionPane.QUESTION_MESSAGE);
+                if(id.equals("")){
+                    JOptionPane.showMessageDialog(null, "The primary key has to be inserted", "Error - Insert failed", JOptionPane.ERROR_MESSAGE);
+                }
             }
-            if (view.getNameCheckBox().isSelected()) {
-                name = "'"+view.getNameTextField().getText()+"'";
-            } else {
-                name = "null";
+            if (view.getNameCheckBox().isSelected()&&this.insertName) {
+                name="'"+JOptionPane.showInputDialog(null,"Please input a value for Name","Name value!",JOptionPane.QUESTION_MESSAGE)+"'";
+                if(name.equals("")){
+                    name="null";
+                }
             }
-            if (view.getPersonenCheckBox().isSelected()) {
-                personen = view.getPersonenTextField().getText();
-            } else {
-                personen = "null";
+            if (view.getPersonenCheckBox().isSelected()&&this.insertPersonen) {
+                personen=JOptionPane.showInputDialog(null,"Please input a value for Personen","Personen value!",JOptionPane.QUESTION_MESSAGE);
+                if(personen.equals("")){
+                    personen="null";
+                }
             }
-            if (view.getTiefgangCheckBox().isSelected()) {
-                tiefgang = view.getTiefgangTextField().getText();
-            } else {
-                tiefgang = "null";
-            }
-            if (!view.getIdCheckBox().isSelected() && view.getNameCheckBox().isSelected() && view.getPersonenCheckBox().isSelected() && view.getTiefgangCheckBox().isSelected()) {
-                JOptionPane.showMessageDialog(null, "Please check at least the primary key: id", "Error - Insert failed", JOptionPane.ERROR_MESSAGE);
+            if (view.getTiefgangCheckBox().isSelected()&&this.insertTiefgang) {
+                tiefgang=JOptionPane.showInputDialog(null,"Please input a value for Tiefgang","Tiefgang value!",JOptionPane.QUESTION_MESSAGE);
+                if(tiefgang.equals("")){
+                    tiefgang="null";
+                }
             }
             if (view.getIdCheckBox().isSelected()) {
-                id=view.getIdTextField().getText();
                 String values = id + "," + name + "," + personen + "," + tiefgang;
                 //System.out.println(values); Debugging
                 this.model.insertInto("boot", values, this.currentCon);
-                this.getModel();
+                this.view.repaint();
             }
         }
         if(ae.getSource()==view.getSelectButton()){
@@ -153,43 +159,51 @@ public class SegelController implements ActionListener, FocusListener, TableMode
      * TODO: Make Update out of User's change to table.
      * Overridden tableChanged method, to catch any changes made to the table by the user, and then make an Update to the database out of it.
      * @param e This TableModelEvent is the one used to create the JTable - it reports any changes to the TableModelListener
-     * see www.java2s.com/Tutorial/Java/0240__Swing/ListeningforChangestotheRowsandColumnsofaJTableComponent.htm
+     * @link www.java2s.com/Tutorial/Java/0240__Swing/ListeningforChangestotheRowsandColumnsofaJTableComponent.htm
      */
     @Override
     public void tableChanged(TableModelEvent e) {
-        this.firstRow=e.getFirstRow();
-        this.lastRow=e.getLastRow();
-        this.index=e.getColumn();
+        this.firstRow = e.getFirstRow();
+        this.lastRow = e.getLastRow();
+        this.index = e.getColumn();
 
-        switch(e.getType()){
+        switch (e.getType()) {
             case TableModelEvent.INSERT:
-                for (int i=this.firstRow;i<=lastRow; i++){
+                for (int i = this.firstRow; i <= lastRow; i++) {
                     System.out.println(i);
                 }
                 break;
+            /**
+             * TODO: Search for possibility to get set the TableModel directly to a ResultSet and then inside the database - RTFM
+             */
             case TableModelEvent.UPDATE:
-                if(this.firstRow == TableModelEvent.HEADER_ROW){
-                    if(this.index == TableModelEvent.ALL_COLUMNS){
-                        System.out.println("A column was added");
-                    } else{
-                        System.out.println(this.index+"in header changed");
-                    }
-                }else{
-                    for (int i=this.firstRow; i<=this.lastRow; i++){
-                        if(this.index == TableModelEvent.ALL_COLUMNS){
-                            System.out.println("All columns have changed");
-                        }else{
+                if (!(this.defaultTableModel.equals(this.view.getDefaultTableModel()))) {
+                    if (this.firstRow == TableModelEvent.HEADER_ROW) {
+                        if (this.index == TableModelEvent.ALL_COLUMNS) {
+                            System.out.println("A column was added");
+                        } else {
+                            System.out.println(this.index + "in header changed");
+                        }
+                    } else {
+                        for (int i = this.firstRow; i <= this.lastRow; i++) {
+                            if (this.index == TableModelEvent.ALL_COLUMNS) {
+                                System.out.println("All columns have changed");
+                            } else {
 
-                            System.out.println((i+1)+" "+(this.index+1));
+                                System.out.println((i + 1) + " " + (this.index + 1));
+                            }
                         }
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, "If you want to update, you should enter unequal data", "Error - Update failed", JOptionPane.INFORMATION_MESSAGE);
                 }
                 break;
             case TableModelEvent.DELETE:
-                for(int i=this.firstRow; i<=this.lastRow; i++){
+                for (int i = this.firstRow; i <= this.lastRow; i++) {
                     System.out.println(i);
                 }
                 break;
+
         }
     }
 
@@ -203,34 +217,34 @@ public class SegelController implements ActionListener, FocusListener, TableMode
         this.ie=ie; //ItemEvent as an attribute for actionPerformed to use
         if(ie.getSource()==view.getIdCheckBox()){
             if(ie.getStateChange()==ItemEvent.SELECTED){
-                view.getIdTextField().setEnabled(true);
+                this.insertID=true;
             }
             if(ie.getStateChange()==ItemEvent.DESELECTED){
-                view.getIdTextField().setEnabled(false);
+                this.insertID=false;
             }
         }
         if(ie.getSource()==view.getNameCheckBox()){
             if(ie.getStateChange()==ItemEvent.SELECTED){
-                view.getNameTextField().setEnabled(true);
+                this.insertName=true;
             }
             if(ie.getStateChange()==ItemEvent.DESELECTED){
-                view.getNameTextField().setEnabled(false);
+                this.insertName=false;
             }
         }
         if(ie.getSource()==view.getPersonenCheckBox()){
             if(ie.getStateChange()==ItemEvent.SELECTED){
-                view.getPersonenTextField().setEnabled(true);
+                this.insertPersonen=true;
             }
             if(ie.getStateChange()==ItemEvent.DESELECTED){
-                view.getPersonenTextField().setEnabled(false);
+                this.insertPersonen=false;
             }
         }
         if(ie.getSource()==view.getTiefgangCheckBox()){
             if(ie.getStateChange()==ItemEvent.SELECTED){
-                view.getTiefgangTextField().setEnabled(true);
+                this.insertTiefgang=true;
             }
             if(ie.getStateChange()==ItemEvent.DESELECTED){
-                view.getTiefgangTextField().setEnabled(false);
+                this.insertTiefgang=false;
             }
         }
     }
