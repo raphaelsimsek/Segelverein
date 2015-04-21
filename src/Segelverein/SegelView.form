@@ -44,7 +44,7 @@
           </grid>
         </constraints>
         <properties>
-          <editable value="false"/>
+          <editable value="true"/>
           <enabled value="false"/>
           <horizontalAlignment value="4"/>
           <text value="tiefgang"/>
@@ -107,7 +107,7 @@
           </grid>
         </constraints>
         <properties>
-          <editable value="false"/>
+          <editable value="true"/>
           <enabled value="false"/>
           <horizontalAlignment value="4"/>
           <text value="personen"/>
@@ -131,7 +131,7 @@
           </grid>
         </constraints>
         <properties>
-          <editable value="false"/>
+          <editable value="true"/>
           <enabled value="false"/>
           <horizontalAlignment value="4"/>
           <text value="name"/>
@@ -155,7 +155,7 @@
           </grid>
         </constraints>
         <properties>
-          <editable value="false"/>
+          <editable value="true"/>
           <enabled value="false"/>
           <horizontalAlignment value="4"/>
           <text value="id"/>

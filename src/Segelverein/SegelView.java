@@ -5,7 +5,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 
+import java.sql.*;
+
+import javax.swing.table.*;
+
 /**
+ * TODO: JavaDoc
+ * View Class of Segelverein, JavaDoc coming soon
  * @author Raphael Simsek
  * @version 2015-03-22
  */
@@ -29,9 +35,16 @@ public class SegelView{
     private JComboBox columnComboBox;
     private JButton selectButton;
     private JFrame frame;
-    private String[] columnNames = {"ID","Name","Personen","Tiefgang"};
-    private String [][] data={{"1","USNS Effective","10","99"},
-            {"2","USS Michigan","2","154"}};
+    private DefaultTableModel defaultTableModel;
+
+    public DefaultTableModel getDefaultTableModel() {
+        return defaultTableModel;
+    }
+
+    public void setDefaultTableModel(DefaultTableModel defaultTableModel) {
+        this.defaultTableModel=null;
+        this.defaultTableModel = defaultTableModel;
+    }
 
     public SegelView(SegelController cont){
         this.cont=cont;
@@ -39,19 +52,19 @@ public class SegelView{
         this.commitButton.addActionListener(this.cont);
         this.rollbackButton.addActionListener(this.cont);
         this.insertButton.addActionListener(this.cont);
-        this.tiefgangCheckBox.addActionListener(this.cont);
-        this.personenCheckBox.addActionListener(this.cont);
-        this.nameCheckBox.addActionListener(this.cont);
-        this.idCheckBox.addActionListener(this.cont);
         this.selectButton.addActionListener(this.cont);
         this.deleteButton.addActionListener(this.cont);
         this.mainTable.addFocusListener(this.cont);
+        this.tiefgangCheckBox.addItemListener(this.cont);
+        this.personenCheckBox.addItemListener(this.cont);
+        this.nameCheckBox.addItemListener(this.cont);
+        this.idCheckBox.addItemListener(this.cont);
     }
     public SegelView(){}
 
     public void start(String[] args) {
         frame = new JFrame("SegelView");
-        frame.setContentPane(new SegelView(this.cont).panel1);
+        frame.setContentPane(this.panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -196,6 +209,8 @@ public class SegelView{
     }
 
     private void createUIComponents() {
-        this.mainTable=new JTable(data,columnNames);
+        this.mainTable=new JTable(this.cont.getModel());
+        this.mainTable.getModel().addTableModelListener(this.cont);
+        this.mainTable.setAutoCreateRowSorter(true);
     }
 }
