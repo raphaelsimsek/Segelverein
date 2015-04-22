@@ -25,13 +25,9 @@ public class SegelView{
     private JButton rollbackButton;
     private JButton insertButton;
     private JCheckBox tiefgangCheckBox;
-    private JTextField tiefgangTextField;
     private JCheckBox personenCheckBox;
-    private JTextField personenTextField;
     private JCheckBox nameCheckBox;
-    private JTextField nameTextField;
     private JCheckBox idCheckBox;
-    private JTextField idTextField;
     private JComboBox columnComboBox;
     private JButton selectButton;
     private JFrame frame;
@@ -55,6 +51,8 @@ public class SegelView{
         this.personenCheckBox.addItemListener(this.cont);
         this.nameCheckBox.addItemListener(this.cont);
         this.idCheckBox.addItemListener(this.cont);
+        this.tableComboBox.addItemListener(this.cont);
+        this.columnComboBox.addItemListener(this.cont);
     }
 
     /**

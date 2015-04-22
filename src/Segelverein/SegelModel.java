@@ -23,6 +23,8 @@ import java.util.ArrayList;
 public class SegelModel {
     //creating attributes
     private SegelController cont;
+    private SegelView view;
+    private DatabaseMetaData metaData;
     private String server;
     private String user;
     private String pw;
@@ -30,6 +32,7 @@ public class SegelModel {
     private String query;
     private static Connection conn;
     private ResultSetMetaData rsmd;
+    private String currentTable="";
     private Statement sqlState = null;
     private ResultSet rs;
     //private Boolean first=true; I haven't found the reason yet, but the getDefaultTableModel always used to get called twice, resulting in a unaccurate JTable of the database.
@@ -55,8 +58,9 @@ public class SegelModel {
     /**
      * main/default constructor - setting default values for attributes
      */
-    public SegelModel(SegelController cont){
+    public SegelModel(SegelController cont,SegelView view){
         this.cont=cont;
+        this.view=view;
         this.server="VMware";
         this.user="schoko";
         this.pw="schoko";
@@ -93,6 +97,13 @@ public class SegelModel {
         conn = ds.getConnection();
         */
             conn.setAutoCommit(false);   //deactivating autocommit, transactions are therefor enabled
+
+            this.metaData=conn.getMetaData();
+            this.rs = metaData.getTables(null, null, "%", null);
+            while(rs.next()){
+                this.view.getTableComboBox().addItem(rs.getString(3)); //adding the tables of the db to the JCombobox
+            }
+            this.view.getColumnComboBox().addItem("All");
         }catch (ClassNotFoundException ex){
             JOptionPane.showMessageDialog(null,ex.getMessage(),"Error - Database credentials failed to login", JOptionPane.ERROR_MESSAGE);
         }catch (SQLException ex){
@@ -112,8 +123,8 @@ public class SegelModel {
         SegelModel.conn =conn;
         //int count=0; Debugging
         try{
-            this.sqlState=conn.createStatement();
-            String query="SELECT * FROM boot;";
+            this.sqlState=conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String query="SELECT  FROM "+";";
             this.rs=sqlState.executeQuery(query);
             Object[] tempRow;
             while(rs.next()){
