@@ -27,6 +27,7 @@ public class SegelModel {
     private String user;
     private String pw;
     private String dbname;
+    private String query;
     private static Connection conn;
     private ResultSetMetaData rsmd;
     private Statement sqlState = null;
@@ -102,6 +103,7 @@ public class SegelModel {
     }
 
     /**
+     * TODO: Get ResultSet to update, see here: http://www.newthinktank.com/2012/05/java-video-tutorial-38/
      * Generates the DefaultTableModel for later use in the JTable
      * @param conn Connection used to generate the DefaultTableModel
      * @return DefaultTableModel for JTable
@@ -143,10 +145,19 @@ public class SegelModel {
             //an insert is always executed with executeUpdate, as this is the only one, which doesn't try to get a ResultSet out of the query
             sqlState.executeUpdate(query);
             //Without a commit everything doesn't work at all, because the Change in the Table performs a SELECT, without the possibility of a commit.
-            conn.commit();
         }catch (SQLException ex){
             JOptionPane.showMessageDialog(null,ex.getMessage(),"Error - Insert Execution failed", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void executeQuery(String query){
+        this.query=query;
+        try {
+            conn.createStatement().executeUpdate(this.query);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error - Insert/Delete/Update Execution failed", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     /**

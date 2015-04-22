@@ -68,13 +68,23 @@ public class SegelController implements ActionListener, FocusListener, TableMode
 
     /**
      * TODO: Add functionality to delete and select buttons
+     * TODO: Get rid of NullPointerException for the Delete button
      * @param ae ActionEvent used to read any hits of a button in the later coming GUI
      */
     public void actionPerformed(ActionEvent ae){
         if(ae.getSource()==view.getDeleteButton()){
             this.selectedRow=this.view.getMainTable().getSelectedRow();
+            System.out.println(this.selectedRow);
             Object deleteCell=this.view.getDefaultTableModel().getValueAt(this.selectedRow,1);
+            System.out.println(deleteCell.toString());
             String query="DELETE FROM boot WHERE id="+deleteCell.toString();
+            this.model.executeQuery(query);
+            try {
+                this.currentCon.commit();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            this.view.repaint();
         }
         if(ae.getSource()==view.getCommitButton()){
             try {
@@ -129,13 +139,15 @@ public class SegelController implements ActionListener, FocusListener, TableMode
                 String values = id + "," + name + "," + personen + "," + tiefgang;
                 //System.out.println(values); Debugging
                 this.model.insertInto("boot", values, this.currentCon);
+                try {
+                    currentCon.commit();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 this.view.repaint();
             }
         }
         if(ae.getSource()==view.getSelectButton()){
-
-        }
-        if(ae.getSource()==view.getDeleteButton()){
 
         }
     }
