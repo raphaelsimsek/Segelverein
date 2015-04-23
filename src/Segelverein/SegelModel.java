@@ -124,7 +124,7 @@ public class SegelModel {
         //int count=0; Debugging
         try{
             this.sqlState=conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query="SELECT  FROM "+";";
+            String query="SELECT * FROM "+this.currentTable+";"; //TODO: Write the Listener for the JCombobox, in it set currentTable, to the table that was selected by the user, find how to use a default on JCombobox
             this.rs=sqlState.executeQuery(query);
             Object[] tempRow;
             while(rs.next()){
@@ -200,7 +200,7 @@ public class SegelModel {
         return tableColumnModel;
     }
 
-    /** (no-JavaDoc)
+    /*
      * deprecated - not used anymore
      * reads out the content of every column of every table of the database
      * @param conn the connection, which was before acquired through getConn
