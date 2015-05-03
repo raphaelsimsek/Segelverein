@@ -9,6 +9,7 @@ import java.sql.SQLException;
  * @author Raphael Simsek 4CHITM
  * @version 2015-04-21
  */
+/*
 public class TestInsert {
 
     public static void main(String [] args){
@@ -31,10 +32,11 @@ public class TestInsert {
             /*
             Committing right after the INSERT is essential, as the Change in the Table in my execution of the INSERT creates an immediate
              SELECT * from boot; to refresh the table
-             */
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
 }
+*/

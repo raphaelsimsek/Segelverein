@@ -45,8 +45,9 @@ public class SegelController implements ActionListener, FocusListener, TableMode
      * @throws SQLException to the main method
      */
     public SegelController() throws SQLException{
-        this.model=new SegelModel(this);
         this.view=new SegelView(this);
+        //Added view to the model, to fill the JCombobox wih tables of the db
+        this.model=new SegelModel(this,this.view);
         this.view.start();
 
         //You only set the window visible, once all of the content is loaded to it
