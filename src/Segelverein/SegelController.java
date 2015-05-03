@@ -26,7 +26,7 @@ import java.sql.SQLException;
 public class SegelController implements ActionListener, FocusListener, TableModelListener, ItemListener, MouseListener{
     private SegelModel model;
     private SegelView view;
-    private Connection currentCon;
+    private Connection currentCon=null;
     private DefaultTableModel defaultTableModel;
     private TableColumnModel tableColumnModel;
     private int firstRow;
@@ -39,15 +39,21 @@ public class SegelController implements ActionListener, FocusListener, TableMode
     private boolean insertTiefgang=false;
     private int selectedRow=1;
     private Object updateSelected=null;
+    private String hostname,username,password,database;
 
     /**
      * Constructor, which generates all the other objects and gives them its parameter
      * @throws SQLException to the main method
      */
-    public SegelController() throws SQLException{
-        this.view=new SegelView(this);
+    public SegelController(String hostname, String username, String password, String database) throws SQLException{
+        this.hostname=hostname;
+        this.username=username;
+        this.password=password;
+        this.database=database;
+
         //Added view to the model, to fill the JCombobox wih tables of the db
-        this.model=new SegelModel(this,this.view);
+        this.model=new SegelModel(this,null);
+        this.view=new SegelView(this);
         this.view.start();
 
         //You only set the window visible, once all of the content is loaded to it
@@ -58,7 +64,7 @@ public class SegelController implements ActionListener, FocusListener, TableMode
      * @return defaultTableModel filled with columns and rows of the table boot for later use to generate the JTable
      */
     public DefaultTableModel getModel(){
-        this.currentCon=this.model.getConn("VMware","segler","segler","segelverein");
+        this.currentCon=this.model.getConn(this.hostname,this.username,this.password,this.database);
         this.defaultTableModel=this.model.getDefaultTableModel(this.currentCon);
         //this.tableColumnModel=this.model.getColumns(); NullPointerException on this Method, unsolved error!
         return this.defaultTableModel;

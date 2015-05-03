@@ -1,19 +1,15 @@
-package Segelverein;
+package Testing;
 
 import org.apache.commons.cli.*;
 
-import javax.swing.*;
 import java.io.Console;
-import java.sql.SQLException;
 import java.util.InputMismatchException;
 
 /**
- * TODO: DELETE, SELECT functionalities, Apache CLI for multiple users, dynamic use of tables (esp. in the columns - see Controller)
- * Main method, used to generate the Controller
- * @author Raphael Simsek 4CHITM
- * @version 2015-03-22
+ * @author Raphael Simsek
+ * @version 2015-05-04
  */
-public class SegelTest {
+public class Test_ApacheCLI {
     public static void main(String[] args) {
         String hostname,username,password,database;
 
@@ -57,10 +53,6 @@ public class SegelTest {
             throw new InputMismatchException("The database-name is required to establish a connection");
         }
 
-        try {
-            new SegelController(hostname,username,password,database);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null,ex.getMessage(),"SQL Alert",JOptionPane.ERROR_MESSAGE);
-        }
+
     }
 }

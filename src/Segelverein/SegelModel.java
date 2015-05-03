@@ -100,10 +100,10 @@ public class SegelModel {
 
             this.metaData=conn.getMetaData();
             this.rs = metaData.getTables(null, null, "%", null);
-            while(rs.next()){
+            /*while(rs.next()){
                 this.view.getTableComboBox().addItem(rs.getString(3)); //adding the tables of the db to the JCombobox
             }
-            this.view.getColumnComboBox().addItem("All");
+            this.view.getColumnComboBox().addItem("All");*/
         }catch (ClassNotFoundException ex){
             JOptionPane.showMessageDialog(null,ex.getMessage(),"Error - Database credentials failed to login", JOptionPane.ERROR_MESSAGE);
         }catch (SQLException ex){
@@ -124,7 +124,7 @@ public class SegelModel {
         //int count=0; Debugging
         try{
             this.sqlState=conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            String query="SELECT * FROM "+this.currentTable+";"; //TODO: Write the Listener for the JCombobox, in it set currentTable, to the table that was selected by the user, find how to use a default on JCombobox
+            String query="SELECT * FROM boot"+/*+this.currentTable+*/";"; //TODO: Write the Listener for the JCombobox, in it set currentTable, to the table that was selected by the user, find how to use a default on JCombobox
             this.rs=sqlState.executeQuery(query);
             Object[] tempRow;
             while(rs.next()){
