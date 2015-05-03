@@ -55,6 +55,7 @@ public class SegelView{
         this.personenCheckBox.addItemListener(this.cont);
         this.nameCheckBox.addItemListener(this.cont);
         this.idCheckBox.addItemListener(this.cont);
+        this.mainTable.addMouseListener(this.cont);
     }
 
     /**

@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
+ * @link: http://docs.oracle.com/javase/tutorial/jdbc/basics/jdbcswing.html
  * The controller class of the assignment 'Segelverein'.
  * It is used to connect model and view, as well as to encapsulate the data from each other.
  *
@@ -22,7 +23,7 @@ import java.sql.SQLException;
  * @author Raphael Simsek 4CHITM
  * @version 2015-03-17
  */
-public class SegelController implements ActionListener, FocusListener, TableModelListener, ItemListener{
+public class SegelController implements ActionListener, FocusListener, TableModelListener, ItemListener, MouseListener{
     private SegelModel model;
     private SegelView view;
     private Connection currentCon;
@@ -37,6 +38,7 @@ public class SegelController implements ActionListener, FocusListener, TableMode
     private boolean insertPersonen=false;
     private boolean insertTiefgang=false;
     private int selectedRow=1;
+    private Object updateSelected=null;
 
     /**
      * Constructor, which generates all the other objects and gives them its parameter
@@ -72,13 +74,18 @@ public class SegelController implements ActionListener, FocusListener, TableMode
      * @param ae ActionEvent used to read any hits of a button in the later coming GUI
      */
     public void actionPerformed(ActionEvent ae){
+        /* DELETE Button Action Listener */
         if(ae.getSource()==view.getDeleteButton()){
             this.selectedRow=this.view.getMainTable().getSelectedRow();
-            System.out.println(this.selectedRow);
-            Object deleteCell=this.view.getDefaultTableModel().getValueAt(this.selectedRow,1);
+            //this.selectedRow=-1;
+            //System.out.println(this.selectedRow);
+            Object deleteCell=this.view.getMainTable().getValueAt(this.selectedRow,0);
             System.out.println(deleteCell.toString());
             String query="DELETE FROM boot WHERE id="+deleteCell.toString();
             this.model.executeQuery(query);
+            System.out.println("Row deleted: "+this.selectedRow);
+            this.defaultTableModel.fireTableStructureChanged();
+
             try {
                 this.currentCon.commit();
             } catch (SQLException e) {
@@ -86,6 +93,8 @@ public class SegelController implements ActionListener, FocusListener, TableMode
             }
             this.view.repaint();
         }
+
+        /* COMMIT Button ActionListener */
         if(ae.getSource()==view.getCommitButton()){
             try {
                 this.currentCon.commit();
@@ -104,6 +113,8 @@ public class SegelController implements ActionListener, FocusListener, TableMode
             }
             JOptionPane.showMessageDialog(null, "Rollback successful", "Rollback", JOptionPane.INFORMATION_MESSAGE);
         }
+
+        /* INSERT Button ActionListener */
         if(ae.getSource()==view.getInsertButton()) {
             String id = "";
             String name = "";
@@ -135,6 +146,8 @@ public class SegelController implements ActionListener, FocusListener, TableMode
                     tiefgang="null";
                 }
             }
+
+            /* EXECUTE SELECT Button ActionListener */
             if (view.getIdCheckBox().isSelected()) {
                 String values = id + "," + name + "," + personen + "," + tiefgang;
                 //System.out.println(values); Debugging
@@ -182,32 +195,28 @@ public class SegelController implements ActionListener, FocusListener, TableMode
         switch (e.getType()) {
             case TableModelEvent.INSERT:
                 for (int i = this.firstRow; i <= lastRow; i++) {
-                    System.out.println(i);
+                    //System.out.println(i);
                 }
                 break;
             /**
              * TODO: Search for possibility to get set the TableModel directly to a ResultSet and then inside the database - RTFM
              */
             case TableModelEvent.UPDATE:
-                if (!(this.defaultTableModel.equals(this.view.getDefaultTableModel()))) {
-                    if (this.firstRow == TableModelEvent.HEADER_ROW) {
-                        if (this.index == TableModelEvent.ALL_COLUMNS) {
-                            System.out.println("A column was added");
-                        } else {
-                            System.out.println(this.index + "in header changed");
-                        }
+                if (this.firstRow == TableModelEvent.HEADER_ROW) {
+                    if (this.index == TableModelEvent.ALL_COLUMNS) {
+                        System.out.println("A column was added");
                     } else {
-                        for (int i = this.firstRow; i <= this.lastRow; i++) {
-                            if (this.index == TableModelEvent.ALL_COLUMNS) {
-                                System.out.println("All columns have changed");
-                            } else {
-
-                                System.out.println((i + 1) + " " + (this.index + 1));
-                            }
-                        }
+                        System.out.println(this.index + "in header changed");
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "If you want to update, you should enter unequal data", "Error - Update failed", JOptionPane.INFORMATION_MESSAGE);
+                    for (int i = this.firstRow; i <= this.lastRow; i++) {
+                        if (this.index == TableModelEvent.ALL_COLUMNS) {
+                            System.out.println("All columns have changed");
+                        } else {
+                            this.updateSelected=this.view.getMainTable().getValueAt(i,this.index);
+                            System.out.println(this.updateSelected.toString() + ": Row:"+(i) + " Column:" + (this.index));
+                        }
+                    }
                 }
                 break;
             case TableModelEvent.DELETE:
@@ -259,5 +268,30 @@ public class SegelController implements ActionListener, FocusListener, TableMode
                 this.insertTiefgang=false;
             }
         }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println("Mouse pressed on: Row: "+this.view.getMainTable().getSelectedRow() + " Column: "+this.view.getMainTable().getSelectedColumn());
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
     }
 }
