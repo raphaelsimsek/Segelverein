@@ -19,7 +19,7 @@ public class SegelView{
     private SegelController cont;
     private JTable mainTable;
     private JPanel panel1;
-    private JComboBox tableComboBox;
+    private JComboBox<String> tableComboBox;
     private JButton deleteButton;
     private JButton commitButton;
     private JButton rollbackButton;
@@ -88,7 +88,7 @@ public class SegelView{
     public void repaint(){
         this.defaultTableModel=(DefaultTableModel)this.mainTable.getModel();
         this.defaultTableModel.getDataVector().removeAllElements();
-        this.mainTable =new JTable(this.cont.getModel());
+        this.mainTable.setModel(this.cont.getModel());
         this.frame.repaint();
     }
 
@@ -122,11 +122,11 @@ public class SegelView{
         this.mainTable = mainTable;
     }
 
-    public JComboBox getTableComboBox() {
+    public JComboBox<String> getTableComboBox() {
         return tableComboBox;
     }
 
-    public void setTableComboBox(JComboBox tableComboBox) {
+    public void setTableComboBox(JComboBox<String> tableComboBox) {
         this.tableComboBox = tableComboBox;
     }
 
@@ -218,5 +218,13 @@ public class SegelView{
         this.mainTable.getModel().addTableModelListener(this.cont); //sets a Listener on the TableModel
         //because I set the columns for the correct datatypes for boot, it is possible to let it be sortable with the default row sorter.
         this.mainTable.setAutoCreateRowSorter(true);
+        String[] tables=new String[3];
+        tables[0]="Boot";
+        tables[1]="Mannschaft";
+        tables[2]="Wettfahrt";
+        //System.out.println(tables[0]+tables[1]+tables[2]);
+        this.tableComboBox=new JComboBox(tables);
+        //System.out.println(tableComboBox.getItemAt(0)+tableComboBox.getItemAt(1)+tableComboBox.getItemAt(2));
+
     }
 }

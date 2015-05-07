@@ -36,6 +36,8 @@ public class SegelModel {
     private String currentTable="";
     private Statement sqlState = null;
     private ResultSet rs;
+    private String column, table;
+    private Object oldUpdate,newUpdate;
     //private Boolean first=true; I haven't found the reason yet, but the getDefaultTableModel always used to get called twice, resulting in a unaccurate JTable of the database.
     private static Object[] columns={"id","name","personen","tiefgang"};
     private static Object[][] data;
@@ -160,6 +162,27 @@ public class SegelModel {
             //Without a commit everything doesn't work at all, because the Change in the Table performs a SELECT, without the possibility of a commit.
         }catch (SQLException ex){
             JOptionPane.showMessageDialog(null,ex.getMessage(),"Error - Insert Execution failed", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void updateQuery(Object oldUpdate,Object newUpdate, String table, String column){
+        this.oldUpdate=oldUpdate;
+        this.newUpdate=newUpdate;
+        this.table=table;
+        this.column=column;
+        if(!this.oldUpdate.equals(newUpdate)){
+            try {
+                this.sqlState=conn.createStatement();
+                String query="UPDATE "+this.table+" SET "+this.column+"='"+this.newUpdate+"' WHERE "+this.column+" ='"+this.oldUpdate+"';";
+                System.out.println(query);
+                sqlState.execute(query);
+                JOptionPane.showMessageDialog(null, "UPDATE successful", "Error - UPDATE", JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error - UPDATE Execution failed", JOptionPane.ERROR_MESSAGE);
+            }
+        }else{
+            JOptionPane.showMessageDialog(null,"You didn't input any changes to be updated, please input changes for update", "Error - Update Execution failed", JOptionPane.ERROR_MESSAGE);
+
         }
     }
 

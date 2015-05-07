@@ -38,8 +38,8 @@ public class SegelController implements ActionListener, FocusListener, TableMode
     private boolean insertPersonen=false;
     private boolean insertTiefgang=false;
     private int selectedRow=1;
-    private Object updateSelected=null;
-    private String hostname,username,password,database,port;
+    private Object newUpdate=null,oldUpdate;
+    private String hostname,username,password,database,port, column,updateid;
 
     /**
      * Constructor, which generates all the other objects and gives them its parameter
@@ -65,9 +65,10 @@ public class SegelController implements ActionListener, FocusListener, TableMode
      * @return defaultTableModel filled with columns and rows of the table boot for later use to generate the JTable
      */
     public DefaultTableModel getModel(){
-        this.currentCon=this.model.getConn(this.hostname,this.username,this.password,this.database,this.port);
+        this.currentCon=this.model.getConn(this.hostname, this.username, this.password, this.database, this.port);
         this.defaultTableModel=this.model.getDefaultTableModel(this.currentCon);
-        //this.tableColumnModel=this.model.getColumns(); NullPointerException on this Method, unsolved error!
+        //this.tableColumnModel=this.model.getColumns(); NullPointerException on this Method, unsolved error
+        //this.view.getTableComboBox().addItem("Boot");
         return this.defaultTableModel;
 
     }
@@ -77,7 +78,7 @@ public class SegelController implements ActionListener, FocusListener, TableMode
     }
 
     /**
-     * TODO: Add functionality to delete and select buttons
+     * TODO: Add functionality to select buttons
      * TODO: Get rid of NullPointerException for the Delete button
      * @param ae ActionEvent used to read any hits of a button in the later coming GUI
      */
@@ -91,13 +92,13 @@ public class SegelController implements ActionListener, FocusListener, TableMode
             System.out.println(deleteCell.toString());
             String query="DELETE FROM boot WHERE id="+deleteCell.toString();
             this.model.executeQuery(query);
-            System.out.println("Row deleted: "+this.selectedRow);
+            System.out.println("Row deleted: " + this.selectedRow);
             this.defaultTableModel.fireTableStructureChanged();
 
             try {
                 this.currentCon.commit();
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error - DELETE failed", JOptionPane.ERROR_MESSAGE);
             }
             this.view.repaint();
         }
@@ -221,8 +222,31 @@ public class SegelController implements ActionListener, FocusListener, TableMode
                         if (this.index == TableModelEvent.ALL_COLUMNS) {
                             System.out.println("All columns have changed");
                         } else {
-                            this.updateSelected=this.view.getMainTable().getValueAt(i,this.index);
-                            System.out.println(this.updateSelected.toString() + ": Row:"+(i) + " Column:" + (this.index));
+                            this.newUpdate=this.view.getMainTable().getValueAt(i,this.index);
+                            System.out.println(this.newUpdate.toString() + ": Row:"+(i) + " Column:" + (this.index));
+                            switch(this.index){
+                                case 0:
+                                    this.column="id";
+                                    break;
+                                case 1:
+                                    this.column="name";
+                                    break;
+                                case 2:
+                                    this.column="personen";
+                                    break;
+                                case 3:
+                                    this.column="tiefgang";
+                                    break;
+                            }
+                            //this.column=this.view.getMainTable().getValueAt(1,this.index).toString();
+                            System.out.println(this.column);
+                            this.model.updateQuery(this.oldUpdate, this.newUpdate, "boot", this.column);
+                            try {
+                                this.currentCon.commit();
+                            } catch (SQLException ex) {
+                                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error - Commit on UPDATE failed", JOptionPane.ERROR_MESSAGE);
+                            }
+                            this.view.repaint();
                         }
                     }
                 }
@@ -280,7 +304,8 @@ public class SegelController implements ActionListener, FocusListener, TableMode
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("Mouse pressed on: Row: "+this.view.getMainTable().getSelectedRow() + " Column: "+this.view.getMainTable().getSelectedColumn());
+        //System.out.println("Mouse pressed on: Row: "+this.view.getMainTable().getSelectedRow() + " Column: "+this.view.getMainTable().getSelectedColumn());
+        this.oldUpdate=this.view.getMainTable().getValueAt(this.view.getMainTable().getSelectedRow(),this.view.getMainTable().getSelectedColumn());
     }
 
     @Override
