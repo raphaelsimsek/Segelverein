@@ -29,6 +29,7 @@ public class SegelModel {
     private String user;
     private String pw;
     private String dbname;
+    private String port;
     private String query;
     private static Connection conn;
     private ResultSetMetaData rsmd;
@@ -76,15 +77,16 @@ public class SegelModel {
      * @return returns the built static autocommit-disabled Connection
      * @throws SQLException relays the Exception to the controller, which relays it to the main method
      */
-    public Connection getConn(String server, String user, String pw, String dbname){
+    public Connection getConn(String server, String user, String pw, String dbname, String port){
         //setting the parameters to the local attributes
         this.server=server;
         this.user=user;
         this.pw=pw;
         this.dbname=dbname;
+        this.port=port;
         try {
             Class.forName("org.postgresql.Driver");
-            conn = DriverManager.getConnection("jdbc:postgresql://"+this.server+"/"+this.dbname, this.user, this.pw);
+            conn = DriverManager.getConnection("jdbc:postgresql://"+this.server+":"+this.port+"/"+this.dbname, this.user, this.pw);
 
 
         /*PGSimpleDataSource ds = new PGSimpleDataSource();     //PostgreSQL DataSource Class, chose Simple, see documentation

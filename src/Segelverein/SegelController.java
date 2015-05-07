@@ -39,17 +39,18 @@ public class SegelController implements ActionListener, FocusListener, TableMode
     private boolean insertTiefgang=false;
     private int selectedRow=1;
     private Object updateSelected=null;
-    private String hostname,username,password,database;
+    private String hostname,username,password,database,port;
 
     /**
      * Constructor, which generates all the other objects and gives them its parameter
      * @throws SQLException to the main method
      */
-    public SegelController(String hostname, String username, String password, String database) throws SQLException{
+    public SegelController(String hostname, String username, String password, String database, String port) throws SQLException{
         this.hostname=hostname;
         this.username=username;
         this.password=password;
         this.database=database;
+        this.port=port;
 
         //Added view to the model, to fill the JCombobox wih tables of the db
         this.model=new SegelModel(this,null);
@@ -64,7 +65,7 @@ public class SegelController implements ActionListener, FocusListener, TableMode
      * @return defaultTableModel filled with columns and rows of the table boot for later use to generate the JTable
      */
     public DefaultTableModel getModel(){
-        this.currentCon=this.model.getConn(this.hostname,this.username,this.password,this.database);
+        this.currentCon=this.model.getConn(this.hostname,this.username,this.password,this.database,this.port);
         this.defaultTableModel=this.model.getDefaultTableModel(this.currentCon);
         //this.tableColumnModel=this.model.getColumns(); NullPointerException on this Method, unsolved error!
         return this.defaultTableModel;
