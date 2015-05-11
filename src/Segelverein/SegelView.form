@@ -23,7 +23,8 @@
         </constraints>
         <properties>
           <editable value="false"/>
-          <model/>
+          <enabled value="true"/>
+          <maximumRowCount value="20"/>
         </properties>
       </component>
       <scrollpane id="ba8b9">

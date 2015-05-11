@@ -174,11 +174,11 @@ public class SegelModel {
             try {
                 this.sqlState=conn.createStatement();
                 String query="UPDATE "+this.table+" SET "+this.column+"='"+this.newUpdate+"' WHERE "+this.column+" ='"+this.oldUpdate+"';";
-                System.out.println(query);
+                //System.out.println(query);
                 sqlState.execute(query);
-                JOptionPane.showMessageDialog(null, "UPDATE successful", "Error - UPDATE", JOptionPane.INFORMATION_MESSAGE);
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage(), "Error - UPDATE Execution failed", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "UPDATE successful", "UPDATE", JOptionPane.INFORMATION_MESSAGE);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage() + "\n Have you input the same primary key twice? \n This would typically be an ID.", "Error - UPDATE Execution failed", JOptionPane.ERROR_MESSAGE);
             }
         }else{
             JOptionPane.showMessageDialog(null,"You didn't input any changes to be updated, please input changes for update", "Error - Update Execution failed", JOptionPane.ERROR_MESSAGE);

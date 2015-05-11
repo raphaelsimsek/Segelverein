@@ -55,7 +55,6 @@ public class SegelController implements ActionListener, FocusListener, TableMode
         //Added view to the model, to fill the JCombobox wih tables of the db
         this.model=new SegelModel(this,null);
         this.view=new SegelView(this);
-        this.view.start();
 
         //You only set the window visible, once all of the content is loaded to it
     }
@@ -88,15 +87,23 @@ public class SegelController implements ActionListener, FocusListener, TableMode
             this.selectedRow=this.view.getMainTable().getSelectedRow();
             //this.selectedRow=-1;
             //System.out.println(this.selectedRow);
-            Object deleteCell=this.view.getMainTable().getValueAt(this.selectedRow,0);
-            System.out.println(deleteCell.toString());
-            String query="DELETE FROM boot WHERE id="+deleteCell.toString();
-            this.model.executeQuery(query);
-            System.out.println("Row deleted: " + this.selectedRow);
-            this.defaultTableModel.fireTableStructureChanged();
+            Object deleteCell=null;
+            try {
+                this.oldUpdate=null; //To catch the IndexOutOfBoundsException, before the MouseListener tries to get the selected and deleted row off of the JTable
+                deleteCell = this.view.getMainTable().getValueAt(this.selectedRow, 0);
+                //System.out.println(deleteCell.toString());
+                String query="DELETE FROM boot WHERE id="+deleteCell.toString();
+                this.model.executeQuery(query);
+                //System.out.println("Row deleted: " + this.selectedRow+1);
+                this.defaultTableModel.fireTableStructureChanged();
 
+            } catch (IndexOutOfBoundsException ex){
+                //To hide IndexOutOfBoundsException, which is throwed at deleting a row, otherwise there was no viable solution to me - so...
+                //TODO: Properly fix thrown IndexOutOfBoundsException, instead of simply catching it
+            }
             try {
                 this.currentCon.commit();
+                //JOptionPane.showMessageDialog(null, "DELETE successful", "DELETE", JOptionPane.INFORMATION_MESSAGE);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage(), "Error - DELETE failed", JOptionPane.ERROR_MESSAGE);
             }
@@ -305,6 +312,7 @@ public class SegelController implements ActionListener, FocusListener, TableMode
     @Override
     public void mouseClicked(MouseEvent e) {
         //System.out.println("Mouse pressed on: Row: "+this.view.getMainTable().getSelectedRow() + " Column: "+this.view.getMainTable().getSelectedColumn());
+        //TODO: Add ifexists to catch the IndexOutOfBoundsException on delete
         this.oldUpdate=this.view.getMainTable().getValueAt(this.view.getMainTable().getSelectedRow(),this.view.getMainTable().getSelectedColumn());
     }
 

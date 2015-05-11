@@ -27,8 +27,7 @@ public class SegelTest {
         CommandLineParser parser = new BasicParser();
         CommandLine cmd=null;
 
-        /*
-        HelpFormatter hf=new HelpFormatter();
+        /*HelpFormatter hf=new HelpFormatter();
         hf.setShellCommand("Segelverein.jar");
         hf.setGroup(segelOptions);*/
 
